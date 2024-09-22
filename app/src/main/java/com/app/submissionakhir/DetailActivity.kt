@@ -1,54 +1,46 @@
 package com.app.submissionakhir
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.app.submissionakhir.databinding.ActivityDetailBinding
+import com.app.submissionakhir.model.Club
 
 class DetailActivity : AppCompatActivity() {
 
+    private lateinit var bind: ActivityDetailBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
+        bind = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(bind.root)
 
-        val back: ImageView = findViewById(R.id.back)
-        back.setOnClickListener{
-            startActivity(Intent(this, MainActivity::class.java))
+        val dataClub = if (Build.VERSION.SDK_INT  >= 33) {
+            intent.getParcelableExtra("key_club", Club::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("key_hero")
         }
 
-        val name = intent.getStringExtra("name")
-        val judul: TextView = findViewById(R.id.tvJudul)
-        judul.text = name
+        bind.actionShare.setOnClickListener{
+            Toast.makeText(this@DetailActivity, "Share ${dataClub?.name}", Toast.LENGTH_SHORT).show()
+        }
 
-        val desc = intent.getStringExtra("desc")
-        val data: TextView = findViewById(R.id.tvDesc)
-        data.text = desc
+        bind.back.setOnClickListener {
+            startActivity(Intent(this@DetailActivity, MainActivity::class.java))
+        }
 
-        val stadium = intent.getStringExtra("stadium")
-        val dataStad: TextView = findViewById(R.id.tvStadium)
-        dataStad.text = stadium
-
-        val epl = intent.getStringExtra("epl")
-        val dataEpl: TextView = findViewById(R.id.tvEpl)
-        dataEpl.text = epl
-
-        val ucl = intent.getStringExtra("ucl")
-        val dataUcl: TextView = findViewById(R.id.tvUcl)
-        dataUcl.text = ucl
-
-        val fa = intent.getStringExtra("fa")
-        val dataFa: TextView = findViewById(R.id.tvFa)
-        dataFa.text = fa
-
-        val poto = intent.getIntExtra("poto", 0)
-        val pott: ImageView = findViewById(R.id.ivPoto)
-        pott.setImageResource(poto)
-
-        val dataa: TextView = findViewById(R.id.desc)
-        dataa.text = desc
-
-
-
+        dataClub?.let {
+            bind.tvJudul.text = it.name
+            bind.tvDesc.text = it.desc
+            bind.tvStadium.text = it.stadium
+            bind.tvEpl.text = it.epl
+            bind.tvUcl.text = it.ucl
+            bind.tvFa.text = it.fa
+            bind.ivPoto.setImageResource(it.poto)
+            bind.desc.text = it.desc
+        }
     }
 }

@@ -2,31 +2,28 @@ package com.app.submissionakhir
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.submissionakhir.adapter.ClubAdapter
+import com.app.submissionakhir.databinding.ActivityMainBinding
 import com.app.submissionakhir.model.Club
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var rv: RecyclerView
     private val listClub = ArrayList<Club>()
+    private lateinit var bind: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        bind = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(bind.root)
 
-        val profile: ImageView = findViewById(R.id.ivProfile)
-        profile.setOnClickListener{
+        bind.ivProfile.setOnClickListener {
             startActivity(Intent(this@MainActivity, AboutActivity::class.java))
         }
 
-        rv = findViewById(R.id.rv)
-        rv.setHasFixedSize(true)
-
+        bind.rv.setHasFixedSize(true)
         listClub.addAll(getListClub())
         setRvList()
     }
@@ -45,12 +42,13 @@ class MainActivity : AppCompatActivity() {
             val club = Club(dataName[i], dataDesc[i], dataStad[i], dataEpl[i], dataUcl[i], dataFa[i] ,dataPhoto.getResourceId(i, -1))
             listClub.add(club)
         }
-    return listClub
+
+        return listClub
     }
 
     private fun setRvList() {
-        rv.layoutManager = LinearLayoutManager(this)
+        bind.rv.layoutManager = LinearLayoutManager(this)
         val listClubAdapter = ClubAdapter(listClub)
-        rv.adapter = listClubAdapter
+        bind.rv.adapter = listClubAdapter
     }
 }
